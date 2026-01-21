@@ -10,7 +10,6 @@ use Exception;
 use Google\Protobuf\Descriptor;
 use Google\Protobuf\DescriptorPool;
 use Google\Protobuf\FieldDescriptor;
-use Google\Protobuf\Internal\GPBLabel;
 use Google\Protobuf\Internal\GPBType;
 use Google\Protobuf\Internal\Message;
 use InvalidArgumentException;
@@ -19,6 +18,7 @@ use function json_encode;
 use const JSON_UNESCAPED_SLASHES;
 use const JSON_UNESCAPED_UNICODE;
 use function lcfirst;
+use OpenTelemetry\API\Behavior\LogsMessagesTrait;
 use OpenTelemetry\SDK\Common\Export\TransportInterface;
 use function property_exists;
 use function sprintf;
@@ -30,6 +30,8 @@ use function ucwords;
  */
 final class ProtobufSerializer
 {
+    use LogsMessagesTrait;
+
     private function __construct(private readonly string $contentType)
     {
     }
@@ -117,11 +119,14 @@ final class ProtobufSerializer
             return $payload;
         }
 
-        $data = json_decode($payload);
+        $data = json_decode((string) $payload);
         unset($payload);
         self::traverseDescriptor($data, $desc);
 
-        return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $encoded = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        assert($encoded !== false);
+
+        return $encoded;
     }
 
     private static function traverseDescriptor(object $data, Descriptor $desc): void
@@ -134,7 +139,7 @@ final class ProtobufSerializer
                 continue;
             }
 
-            if ($field->getLabel() === GPBLabel::REPEATED) {
+            if ($field->isRepeated()) {
                 foreach ($data->$name as $key => $value) {
                     $data->$name[$key] = self::traverseFieldDescriptor($value, $field);
                 }

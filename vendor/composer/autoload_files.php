@@ -21,7 +21,6 @@ return array(
     '062120a429d7568eacd495a8c34fcf09' => $vendorDir . '/open-telemetry/sdk/Common/Dev/Compatibility/_load.php',
     '88e3b63cfb48eb8ea316a8a85a5f5c5f' => $vendorDir . '/open-telemetry/sdk/_autoload.php',
     '6e3fae29631ef280660b3cdad06f25a8' => $vendorDir . '/symfony/deprecation-contracts/function.php',
-    'a4a119a56e50fbb293281d9a48007e0e' => $vendorDir . '/symfony/polyfill-php80/bootstrap.php',
     '37a3dc5111fe8f707ab4c132ef1dbc62' => $vendorDir . '/guzzlehttp/guzzle/src/functions_include.php',
     '157bbd0180425c7142fbaf1b1646bec3' => $vendorDir . '/open-telemetry/exporter-otlp/_register.php',
     '58ecdc6bc6b585138831611aa769a744' => $vendorDir . '/open-telemetry/opentelemetry-auto-psr18/_register.php',
